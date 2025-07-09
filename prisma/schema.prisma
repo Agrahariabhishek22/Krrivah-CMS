@@ -73,3 +73,12 @@ model Amenitiy{
   listings String[]
 }
 
+model Image{
+  id Int @id @default (autoincrement())
+  pageName String
+  component String 
+  imageUrl String
+  isActive Boolean @default(false)
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+}
