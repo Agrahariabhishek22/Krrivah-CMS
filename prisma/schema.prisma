@@ -83,3 +83,12 @@ model Image{
   createdAt DateTime @default(now())
   updateAt DateTime @updatedAt
 }
+
+model HeroBrand {
+  id          Int     @id @default(autoincrement())
+  title       String
+  imageUrl    String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

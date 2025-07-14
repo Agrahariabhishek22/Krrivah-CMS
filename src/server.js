@@ -7,6 +7,7 @@ const authRoutes=require('./routes/authRoute');
 const contactRoutes=require('./routes/contactRoute');
 const blogRoutes=require('./routes/blogRoute');
 const projectRoute=require('./routes/projectRoute')
+const HeroBrandRoute=require('./routes/HeroBrandRoute');
 
 // load env files
 dotenv.config();
@@ -32,6 +33,7 @@ app.use("/api/auth",authRoutes);
 app.use("/api/contact",contactRoutes);
 app.use('/api/blog',blogRoutes);
 app.use('/api/project',projectRoute);
+app.use('/api/heroBrand',HeroBrandRoute);
 
 // Test route
 app.get("/", (req, res) => {
