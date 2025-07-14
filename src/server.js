@@ -1,20 +1,37 @@
 const express=require('express')
 const dotenv=require('dotenv')
+const cookieParser = require('cookie-parser');
 const cors=require("cors");
 const errorHandler = require('./middlewares/errorHandlers');
+const authRoutes=require('./routes/authRoute');
+const contactRoutes=require('./routes/contactRoute');
+const blogRoutes=require('./routes/blogRoute');
+const projectRoute=require('./routes/projectRoute')
 
 // load env files
 dotenv.config();
-
+ 
 // create express app
 const app=express();
 
 // middleware
+app.use(cookieParser()); // first load cookies
+app.use(cors({
+  origin: true,
+  credentials: true,
+}));
 app.use(express.json());
-app.use(cors());
+
 
 // error middleware
 app.use(errorHandler)
+
+
+// import routes
+app.use("/api/auth",authRoutes);
+app.use("/api/contact",contactRoutes);
+app.use('/api/blog',blogRoutes);
+app.use('/api/project',projectRoute);
 
 // Test route
 app.get("/", (req, res) => {

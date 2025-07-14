@@ -59,6 +59,7 @@ model Project{
   location String
   short_des String
   long_des String
+  Brochure String
   images  String[] //Multiple image urls
   Amenities Amenitiy[]  //one to many relation
   isActive Boolean @default(false)
