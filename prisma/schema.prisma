@@ -92,3 +92,12 @@ model HeroBrand {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model AchievementStat {
+  id          Int     @id @default(autoincrement())
+  title       String  // e.g., "12+"
+  unit        String? // optional, e.g., "sq. ft."
+  description String  // e.g., "years of design expertise shaping refined living environments."
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

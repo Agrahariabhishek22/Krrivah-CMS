@@ -11,10 +11,10 @@ exports.createBlog = async (req, res, next) => {
       category,
       title,
       short_des,
-      long_des,
+      long_des, 
       quote,
       isActive,
-    } = req.body;
+    } = req.body;  
 
     // Cloudinary file URLs
     const thumbnail = req.files['thumbnail']?.[0]?.path;
@@ -115,7 +115,7 @@ exports.updateBlog = async (req, res, next) => {
 
     const files = req.files;
 
-    //  Handle image replacement logic
+    //Handle image replacement logic
     const imageFields = ["thumbnail", "mainImage", "middleImage"];
     const updatedImages = {};
 
