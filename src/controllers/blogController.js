@@ -13,7 +13,6 @@ exports.createBlog = async (req, res, next) => {
       short_des,
       long_des,
       quote,
-      isActive,
     } = req.body;
 
     // Cloudinary file URLs
@@ -35,7 +34,6 @@ exports.createBlog = async (req, res, next) => {
         short_des,
         long_des,
         quote,
-        isActive: Boolean(isActive),
       },
     });
 

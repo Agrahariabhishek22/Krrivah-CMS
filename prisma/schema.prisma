@@ -48,7 +48,7 @@ model Blog{
   short_des String
   long_des String
   quote String?
-  isActive Boolean @default(false)
+  isActive Boolean @default(true)
 }
 
 model Project{
@@ -62,7 +62,7 @@ model Project{
   Brochure String
   images  String[] //Multiple image urls
   Amenities Amenitiy[]  //one to many relation
-  isActive Boolean @default(false)
+  isActive Boolean @default(true)
   createdAt  DateTime    @default(now())
 }
 
@@ -79,7 +79,7 @@ model Image{
   pageName String
   component String 
   imageUrl String
-  isActive Boolean @default(false)
+  isActive Boolean @default(true)
   createdAt DateTime @default(now())
   updateAt DateTime @updatedAt
 }
@@ -91,4 +91,12 @@ model HeroBrand {
   description String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Stats{
+  id Int @id @default(autoincrement())
+  area String
+  years String
+  amenities String
+  commitments String 
 }

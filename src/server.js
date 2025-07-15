@@ -8,10 +8,12 @@ const contactRoutes=require('./routes/contactRoute');
 const blogRoutes=require('./routes/blogRoute');
 const projectRoute=require('./routes/projectRoute')
 const HeroBrandRoute=require('./routes/HeroBrandRoute');
+const imageRoute=require('./routes/imageRoute')
+const statRoute=require('./routes/statRoute');
 
 // load env files
 dotenv.config();
- 
+
 // create express app
 const app=express();
 
@@ -34,6 +36,9 @@ app.use("/api/contact",contactRoutes);
 app.use('/api/blog',blogRoutes);
 app.use('/api/project',projectRoute);
 app.use('/api/heroBrand',HeroBrandRoute);
+app.use('/api/image',imageRoute)
+app.use('/api/stat',statRoute);
+
 
 // Test route
 app.get("/", (req, res) => {

@@ -14,6 +14,9 @@ exports.createProject = async (req, res, next) => {
       amenities, // array of { title, listings[] }
     } = req.body;
 
+    console.log("inside project");
+    
+
     const brochureFile = req.files?.brochure?.[0];
     const imageFiles = req.files?.images || [];
 
