@@ -101,7 +101,7 @@ model AchievementStat {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
- 
+
 model Stats{
   id Int @id @default(autoincrement())
   area String

@@ -1,74 +1,86 @@
-const prisma=require('../prismaClient')
+const prisma=require('../prismaClient');
+const ApiResponse = require('../utils/apiResponse');
 
-exports.createStats = async (req, res, next) => {
+
+exports.createAchievementStat = async (req, res, next) => {
   try {
-    const existing = await prisma.stats.findFirst();
-    if (existing) {
-      return res.status(400).json({ error: "Stats already exists. Only one record allowed." });
+    const { title, unit, description } = req.body;
+    // console.log("inside create achieve");
+    
+    const count = await prisma.achievementStat.count();
+    if (count >= 4) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, "Maximum of 4 achievement stats allowed"));
     }
 
-    const { area, years, amenities, commitments } = req.body;
-
-    const newStats = await prisma.stats.create({
-      data: {
-        area,
-        years,
-        amenities,
-        commitments,
-      },
+    const stat = await prisma.achievementStat.create({
+      data: { title, unit, description },
     });
 
-    return res.status(201).json(new ApiResponse(201, "Stats created successfully", newStats));
+    return res
+      .status(201)
+      .json(new ApiResponse(201, "Achievement stat created", stat));
   } catch (error) {
     next(error);
   }
 };
 
-exports.deleteStats = async (req, res, next) => {
+
+
+exports.deleteAchievementStat = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
-    const deleted = await prisma.stats.delete({
+
+    const deleted = await prisma.achievementStat.delete({
       where: { id },
     });
 
-    return res.status(200).json(new ApiResponse(200, "Stats deleted", deleted));
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Achievement stat deleted", deleted));
   } catch (error) {
     next(error);
   }
 };
 
-exports.getStats = async (req, res, next) => {
+
+exports.getAllAchievementStats = async (req, res, next) => {
   try {
-    const stats = await prisma.stats.findFirst();
-
-    if (!stats) {
-      return res.status(404).json({ error: "Stats not found" });
-    }
-
-    return res.status(200).json(new ApiResponse(200, "Stats fetched", stats));
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.updateStats = async (req, res, next) => {
-  try {
-    const id = parseInt(req.params.id);
-    const { area, years, amenities, commitments } = req.body;
-
-    const updateData = {};
-    if (area) updateData.area = area;
-    if (years) updateData.years = years;
-    if (amenities) updateData.amenities = amenities;
-    if (commitments) updateData.commitments = commitments;
-
-    const updated = await prisma.stats.update({
-      where: { id },
-      data: updateData,
+    const stats = await prisma.achievementStat.findMany({
+      orderBy: { id: "asc" },
     });
 
-    return res.status(200).json(new ApiResponse(200, "Stats updated", updated));
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "All achievement stats", stats));
   } catch (error) {
     next(error);
   }
+};
+
+
+exports.updateAchievementStat = async (req, res) => {
+  const { id } = req.params;
+
+  if (!req.body) {
+    return res.status(400).json({ message: "Missing request body" });
+  }
+
+  const { title, unit, description } = req.body;
+
+  if (!title || !description) {
+    return res.status(400).json({ message: "Title and description are required" });
+  }
+
+  const updatedStat = await prisma.achievementStat.update({
+    where: { id: parseInt(id) },
+    data: {
+      title,
+      unit,
+      description,
+    },
+  });
+
+  res.status(200).json(updatedStat);
 };
