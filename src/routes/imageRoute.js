@@ -1,39 +1,38 @@
 const express = require("express");
 const router = express.Router();
+const { createImage, getImageById, getImagesByPageName, updateImage, getAllImages, deleteImage } = require("../controllers/imageController");
 const { upload } = require("../utils/cloudinary");
 const catchMulterError = require("../middlewares/catchMulterError");
 const { verifyToken, restrictTo } = require("../middlewares/authMiddleware");
-const { createProject, updateProject, getAllProjects, getProjectById, deleteProject } = require("../controllers/projectController");
 
-const multiUpload = upload.fields([
-  { name: "brochure", maxCount: 1 },
-  { name: "images", maxCount: 10 },
-]);
 
 router.post(
   "/",
   verifyToken,
   restrictTo("Admin", "Super_Admin"),
-  catchMulterError(multiUpload),
-  createProject
+  catchMulterError(upload.single("image")),
+  createImage
 );
 
 router.put(
   "/:id",
   verifyToken,
   restrictTo("Admin", "Super_Admin"),
-  catchMulterError(multiUpload),
-  updateProject
+  catchMulterError(upload.single("image")),
+  updateImage
 );
 
 router.delete(
   "/:id",
   verifyToken,
   restrictTo("Admin", "Super_Admin"),
-  deleteProject
+  deleteImage
 );
 
-router.get("/", getAllProjects);
-router.get("/:id", getProjectById);
+router.get("/:id", getImageById);
+router.get("/", getAllImages);
+router.get("/:pageName", getImagesByPageName);
+
+
 
 module.exports = router;
