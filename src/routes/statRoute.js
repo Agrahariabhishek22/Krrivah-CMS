@@ -4,7 +4,7 @@ const { createAchievementStat, getAllAchievementStats, updateAchievementStat, de
 const { verifyToken, restrictTo } = require("../middlewares/authMiddleware");
 
 
-router.post("/", verifyToken, restrictTo("Admin", "Super_Admin"), createAchievementStat);
+router.post("/create", verifyToken, restrictTo("Admin", "Super_Admin"), createAchievementStat);
 router.get("/", getAllAchievementStats);
 router.put("/update/:id", verifyToken, restrictTo("Admin", "Super_Admin"), updateAchievementStat);
 router.delete("/:id", verifyToken, restrictTo("Admin", "Super_Admin"), deleteAchievementStat);

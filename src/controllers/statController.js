@@ -4,7 +4,7 @@ const ApiResponse = require('../utils/apiResponse');
 
 exports.createAchievementStat = async (req, res, next) => {
   try {
-    const { title, unit, description } = req.body;
+    const { unit, description } = req.body;
     // console.log("inside create achieve");
     
     const count = await prisma.achievementStat.count();
@@ -15,7 +15,7 @@ exports.createAchievementStat = async (req, res, next) => {
     }
 
     const stat = await prisma.achievementStat.create({
-      data: { title, unit, description },
+      data: { unit, description },
     });
 
     return res
@@ -60,27 +60,26 @@ exports.getAllAchievementStats = async (req, res, next) => {
 };
 
 
-exports.updateAchievementStat = async (req, res) => {
+exports.updateAchievementStat = (async (req, res) => {
   const { id } = req.params;
 
   if (!req.body) {
     return res.status(400).json({ message: "Missing request body" });
   }
 
-  const { title, unit, description } = req.body;
+  const { unit, description } = req.body;
 
-  if (!title || !description) {
-    return res.status(400).json({ message: "Title and description are required" });
+  if (!unit || !description) {
+    return res.status(400).json({ message: "Unit and description are required" });
   }
 
   const updatedStat = await prisma.achievementStat.update({
     where: { id: parseInt(id) },
     data: {
-      title,
       unit,
       description,
     },
   });
 
   res.status(200).json(updatedStat);
-};
+});

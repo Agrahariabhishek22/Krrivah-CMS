@@ -95,18 +95,11 @@ model HeroBrand {
  
 model AchievementStat {
   id          Int     @id @default(autoincrement())
-  title       String  // e.g., "12+"
-  unit        String? // optional, e.g., "sq. ft."
+  unit        String // optional, e.g., "sq. ft."
   description String  // e.g., "years of design expertise shaping refined living environments."
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  @@unique([unit, description]) // Prevents duplicate title+description pairs
 }
 
-model Stats{
-  id Int @id @default(autoincrement())
-  area String
-  years String
-  amenities String
-  commitments String 
-}
  
