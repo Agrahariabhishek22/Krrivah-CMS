@@ -16,3 +16,4 @@ router.post('/', verifyToken,restrictTo("Admin", "Super_Admin"), upload.single('
  router.delete('/:id', verifyToken,restrictTo("Admin", "Super_Admin"), deleteHeroBrand);  // validation
    
 module.exports=router
+ 
