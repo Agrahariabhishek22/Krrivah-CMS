@@ -1,53 +1,52 @@
-const express=require('express')
-const dotenv=require('dotenv')
+const express = require('express');
+const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
-const cors=require("cors");
+const cors = require("cors");
 const errorHandler = require('./middlewares/errorHandlers');
-const authRoutes=require('./routes/authRoute');
-const contactRoutes=require('./routes/contactRoute');
-const blogRoutes=require('./routes/blogRoute');
-const projectRoute=require('./routes/projectRoute')
-const HeroBrandRoute=require('./routes/HeroBrandRoute');
-const imageRoute=require('./routes/imageRoute')
-const statRoute=require('./routes/statRoute');
+const authRoutes = require('./routes/authRoute');
+const contactRoutes = require('./routes/contactRoute');
+const blogRoutes = require('./routes/blogRoute');
+const projectRoute = require('./routes/projectRoute');
+const HeroBrandRoute = require('./routes/HeroBrandRoute');
+const imageRoute = require('./routes/imageRoute');
+const statRoute = require('./routes/statRoute');
 
-// load env files
+// Load env files
 dotenv.config();
 
-// create express app
-const app=express();
+// Create express app
+const app = express();
 
-// middleware
-app.use(cookieParser()); // first load cookies
+// Middleware
+app.use(cookieParser()); // First load cookies
+
+// 👇 CORS configuration updated to allow your frontend URL
 app.use(cors({
-  origin: true,
-  credentials: true,
+    origin: 'http://localhost:5173',
+    credentials: true,
 }));
+
 app.use(express.json());
 
-
-// error middleware
-app.use(errorHandler)
-
-
-// import routes
-app.use("/api/auth",authRoutes);
-app.use("/api/contact",contactRoutes);
-app.use('/api/blog',blogRoutes);
-app.use('/api/project',projectRoute);
-app.use('/api/heroBrand',HeroBrandRoute);
-app.use('/api/image',imageRoute)
-app.use('/api/stat',statRoute);
-
+// Import routes BEFORE the error handler
+app.use("/api/auth", authRoutes);
+app.use("/api/contact", contactRoutes);
+app.use('/api/blog', blogRoutes);
+app.use('/api/project', projectRoute);
+app.use('/api/heroBrand', HeroBrandRoute);
+app.use('/api/image', imageRoute);
+app.use('/api/stat', statRoute);
 
 // Test route
 app.get("/", (req, res) => {
-  res.send("Krrivah CMS Backend is Running ");
+    res.send("Krrivah CMS Backend is Running ");
 });
 
+// Error middleware (should be loaded after routes)
+app.use(errorHandler);
 
-// start server 
-const PORT=process.env.PORT||4000; 
-app.listen(PORT,()=>{
-    console.log(`server running on port ${PORT}`); 
+// Start server
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+    console.log(`server running on port ${PORT}`);
 });

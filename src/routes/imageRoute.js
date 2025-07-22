@@ -29,9 +29,9 @@ router.delete(
   deleteImage
 );
 
+router.get("/getByPage/:pageName", getImagesByPageName);
 router.get("/:id", getImageById);
 router.get("/", getAllImages);
-router.get("/:pageName", getImagesByPageName);
 
 
 

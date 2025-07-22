@@ -5,8 +5,10 @@ const {getPublicIdFromUrl}=require("../utils/cloudinaryHelper")
 
 exports.createImage = async (req, res, next) => {
   try {
-    const { pageName, component, isActive } = req.body;
+    const { pageName, component } = req.body;
     const imageFile = req.file;
+    console.log("inside create image");
+    
 
     if (!imageFile) {
       return res.status(400).json({ error: "Image file is required" });
@@ -17,7 +19,6 @@ exports.createImage = async (req, res, next) => {
         pageName,
         component,
         imageUrl: imageFile.path,
-        isActive: isActive === "true" ? true : false,
       },
     });
 
@@ -32,20 +33,20 @@ exports.createImage = async (req, res, next) => {
 exports.updateImage = async (req, res, next) => {
   try {
     const imageId = parseInt(req.params.id);
-    const image = await prisma.image.findUnique({ where: { id: imageId } });
+    const image = await prisma.image.findUnique({ where: { id: imageId } });    
 
     if (!image) {
       return res.status(404).json({ error: "Image not found" });
     }
 
     const { pageName, component, isActive } = req.body;
-    const newFile = req.file;
+    const newFile = req.file;    
 
     const updateData = {};
 
     if (pageName) updateData.pageName = pageName;
     if (component) updateData.component = component;
-    if (isActive !== undefined) updateData.isActive = isActive === "true";
+    if (isActive !== undefined) updateData.isActive = isActive
 
     // Handle image replacement
     if (newFile) {
@@ -58,7 +59,7 @@ exports.updateImage = async (req, res, next) => {
 
       updateData.imageUrl = newFile.path;
     }
-
+    
     const updated = await prisma.image.update({
       where: { id: imageId },
       data: updateData,
@@ -137,6 +138,7 @@ exports.deleteImage = async (req, res, next) => {
 exports.getImagesByPageName = async (req, res, next) => {
   try {
     const { pageName } = req.params;
+    
 
     const images = await prisma.image.findMany({
       where: { pageName },

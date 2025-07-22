@@ -12,7 +12,8 @@ const {
 const router = express.Router();
 router.get('/', getAllHeroBrands);
 router.post('/', verifyToken,restrictTo("Admin", "Super_Admin"), upload.single('image'), createHeroBrand); // validation
- router.put('/:id', verifyToken,restrictTo("Admin", "Super_Admin"), updateHeroBrand); // Optional: can support image update // validation
+ router.put('/update/:id', verifyToken,restrictTo("Admin", "Super_Admin"),upload.single('image'), updateHeroBrand); 
  router.delete('/:id', verifyToken,restrictTo("Admin", "Super_Admin"), deleteHeroBrand);  // validation
-   
+
 module.exports=router
+ 
