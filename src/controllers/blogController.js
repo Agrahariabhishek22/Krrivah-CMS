@@ -17,8 +17,9 @@ exports.createBlog = async (req, res, next) => {
     // Cloudinary file URLs
     const thumbnail = req.files['thumbnail']?.[0]?.path;
     const mainImage = req.files['mainImage']?.[0]?.path;
+    const middleImage = req.files['middleImage']?.[0]?.path;
 
-    if (!category || !thumbnail || !mainImage || !title || !short_des || !long_des) {
+    if (!category || !thumbnail || !mainImage || !middleImage || !title || !short_des || !long_des) {
       return res.status(400).json({ error: "Required fields are missing" });
     }
 
@@ -27,6 +28,7 @@ exports.createBlog = async (req, res, next) => {
         category,
         thumbnail,
         mainImage,
+        middleImage,
         title,
         short_des,
         long_des,
