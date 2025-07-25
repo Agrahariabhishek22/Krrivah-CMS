@@ -93,7 +93,7 @@ exports.updateProject = async (req, res, next) => {
     if (location) updateData.location = location;
     if (short_des) updateData.short_des = short_des;
     if (long_des) updateData.long_des = long_des;
-    if (isActive !== undefined) updateData.isActive = isActive === "true";
+    if (isActive !== undefined) updateData.isActive = isActive ;
 
     // 👇 Brochure update
     if (files?.brochure?.[0]) {

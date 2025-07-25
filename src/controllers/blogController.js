@@ -6,22 +6,17 @@ const {getPublicIdFromUrl}=require("../utils/cloudinaryHelper")
 
 exports.createBlog = async (req, res, next) => {
   try {
-    console.log("Inside create blog");
     const {
       category,
       title,
       short_des,
       long_des, 
-      quote,
- 
-      isActive,
     } = req.body;  
  
 
     // Cloudinary file URLs
     const thumbnail = req.files['thumbnail']?.[0]?.path;
     const mainImage = req.files['mainImage']?.[0]?.path;
-    const middleImage = req.files['middleImage']?.[0]?.path || null;
 
     if (!category || !thumbnail || !mainImage || !title || !short_des || !long_des) {
       return res.status(400).json({ error: "Required fields are missing" });
@@ -32,11 +27,9 @@ exports.createBlog = async (req, res, next) => {
         category,
         thumbnail,
         mainImage,
-        middleImage,
         title,
         short_des,
         long_des,
-        quote,
       },
     });
 
@@ -48,7 +41,6 @@ exports.createBlog = async (req, res, next) => {
 exports.getAllBlogs = async (req, res, next) => {
   try {
     const blogs = await prisma.blog.findMany({
-      where:{isActive:true},
       orderBy:{
         date:'desc',
       }
@@ -113,11 +105,13 @@ exports.updateBlog = async (req, res, next) => {
       quote,
       isActive,
     } = req.body;
+    console.log(isActive);
+    
 
     const files = req.files;
 
     //Handle image replacement logic
-    const imageFields = ["thumbnail", "mainImage", "middleImage"];
+    const imageFields = ["thumbnail", "mainImage"];
     const updatedImages = {};
 
     for (const field of imageFields) {
@@ -140,7 +134,7 @@ exports.updateBlog = async (req, res, next) => {
         updatedImages[field] = blog[field];
       }
     }
-
+    
     const updatedBlog = await prisma.blog.update({
       where: { id: blogId },
       data: {
@@ -149,7 +143,7 @@ exports.updateBlog = async (req, res, next) => {
         short_des,
         long_des,
         quote,
-        isActive: isActive === "true" ? true : false,
+        isActive,
         ...updatedImages,
       },
     });

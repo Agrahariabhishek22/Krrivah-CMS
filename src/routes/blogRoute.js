@@ -10,7 +10,7 @@ const multiUpload=upload.fields([
   { name: 'mainImage', maxCount: 1 },
   { name: 'middleImage', maxCount: 1 },
 ])
- 
+
 router.post(
   "/",
   verifyToken,
