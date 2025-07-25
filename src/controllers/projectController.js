@@ -12,10 +12,7 @@ exports.createProject = async (req, res, next) => {
       short_des,
       long_des,
       amenities, // array of { title, listings[] }
-    } = req.body;
-
-    console.log("inside project");
-    
+    } = req.body;    
 
     const brochureFile = req.files?.brochure?.[0];
     const imageFiles = req.files?.images || [];

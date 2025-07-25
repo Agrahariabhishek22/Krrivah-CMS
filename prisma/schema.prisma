@@ -36,7 +36,6 @@ enum Role{
   Admin
   Super_Admin
 }
-
 model Blog{
   id Int @id @default(autoincrement())
   category String 

@@ -6,9 +6,18 @@ const {getPublicIdFromUrl}=require("../utils/cloudinaryHelper")
 exports.createImage = async (req, res, next) => {
   try {
     const { pageName, component } = req.body;
-    const imageFile = req.file;
-    console.log("inside create image");
-    
+    if (pageName.toLowerCase() === "design") {
+      const designImageCount = await prisma.image.count({
+        where: { pageName: "design" },
+      });
+
+      if (designImageCount >= 20) {
+        return res
+          .status(400)
+          .json({ error: "Cannot add more than 20 images to the design page" });
+      }
+    }
+    const imageFile = req.file;    
 
     if (!imageFile) {
       return res.status(400).json({ error: "Image file is required" });

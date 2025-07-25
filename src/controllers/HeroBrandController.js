@@ -73,13 +73,11 @@ const updateHeroBrand = async (req, res) => {
 // Delete a hero brand (This function was already correct)
 const deleteHeroBrand = async (req, res) => {
   try {
-    console.log("inside banner delete");
     const id = parseInt(req.params.id); // correct usage
 
     await prisma.heroBrand.delete({
       where: { id },
     });
-    console.log("deleted banner successfully");
 
     res.status(200).json({ message: "Hero brand deleted successfully" });
   } catch (error) {
