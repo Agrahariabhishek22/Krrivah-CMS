@@ -11,8 +11,12 @@ exports.createProject = async (req, res, next) => {
       location,
       short_des,
       long_des,
-      amenities, // array of { title, listings[] }
-    } = req.body;    
+      amenities, // array of { title: listings[] }
+    } = req.body;   
+    console.log("inside projects");
+    console.log(req.files);
+    
+      
 
     const brochureFile = req.files?.brochure?.[0];
     const imageFiles = req.files?.images || [];
@@ -35,7 +39,7 @@ exports.createProject = async (req, res, next) => {
       amenitiesData = parsed.map((a) => ({
         title: a.title,
         listings: a.listings,
-      }));
+      })); 
     }
 
     const createdProject = await prisma.project.create({

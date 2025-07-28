@@ -150,7 +150,7 @@ exports.getImagesByPageName = async (req, res, next) => {
     
 
     const images = await prisma.image.findMany({
-      where: { pageName },
+      where: { pageName,isActive: true },
       orderBy: { createdAt: "desc" },
     });
 
