@@ -6,6 +6,7 @@ const { verifyToken, restrictTo } = require("../middlewares/authMiddleware");
 const { createProject, updateProject, getAllProjects, getProjectById, deleteProject } = require("../controllers/projectController");
 
 const multiUpload = upload.fields([
+  { name: "thumbnail", maxCount: 1 },
   { name: "brochure", maxCount: 1 },
   { name: "images", maxCount: 10 },
 ]);

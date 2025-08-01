@@ -12,11 +12,8 @@ exports.createProject = async (req, res, next) => {
       short_des,
       long_des,
       amenities, // array of { title: listings[] }
-    } = req.body;   
-    console.log("inside projects");
-    console.log(req.files);
+    } = req.body;
     
-      
 
     const brochureFile = req.files?.brochure?.[0];
     const imageFiles = req.files?.images || [];
@@ -35,11 +32,12 @@ exports.createProject = async (req, res, next) => {
     // Parse amenities
     let amenitiesData = [];
     if (amenities) {
-      const parsed = typeof amenities === "string" ? JSON.parse(amenities) : amenities;
-      amenitiesData = parsed.map((a) => ({
-        title: a.title,
-        listings: a.listings,
-      })); 
+      const parsed =
+        typeof amenities === "string" ? JSON.parse(amenities) : amenities;
+      amenitiesData = Object.entries(parsed).map(([key, value]) => ({
+        title: key,
+        listings: Array.isArray(value) ? value : [],
+      }));
     }
 
     const createdProject = await prisma.project.create({
@@ -61,7 +59,9 @@ exports.createProject = async (req, res, next) => {
       },
     });
 
-    return res.status(201).json(new ApiResponse(201, "Project created", createdProject));
+    return res
+      .status(201)
+      .json(new ApiResponse(201, "Project created", createdProject));
   } catch (error) {
     next(error);
   }
@@ -70,7 +70,9 @@ exports.createProject = async (req, res, next) => {
 exports.updateProject = async (req, res, next) => {
   try {
     const projectId = parseInt(req.params.id);
-    const existing = await prisma.project.findUnique({ where: { id: projectId } });
+    const existing = await prisma.project.findUnique({
+      where: { id: projectId },
+    });
     if (!existing) {
       return res.status(404).json({ error: "Project not found" });
     }
@@ -94,7 +96,7 @@ exports.updateProject = async (req, res, next) => {
     if (location) updateData.location = location;
     if (short_des) updateData.short_des = short_des;
     if (long_des) updateData.long_des = long_des;
-    if (isActive !== undefined) updateData.isActive = isActive ;
+    if (isActive !== undefined) updateData.isActive = isActive;
 
     // 👇 Brochure update
     if (files?.brochure?.[0]) {
@@ -124,16 +126,27 @@ exports.updateProject = async (req, res, next) => {
 
     // 👇 Update amenities only if provided
     if (amenities) {
-      const parsedAmenities = typeof amenities === "string" ? JSON.parse(amenities) : amenities;
+      const parsedAmenities =
+        typeof amenities === "string" ? JSON.parse(amenities) : amenities;
 
-      await prisma.amenitiy.deleteMany({ where: { projectId } });
-      await prisma.amenitiy.createMany({
-        data: parsedAmenities.map((a) => ({
+      // Convert { villa: [...], apartment: [...] } to [{title, listings}]
+      const amenitiesArray = Object.entries(parsedAmenities).map(
+        ([key, value]) => ({
           projectId,
-          title: a.title,
-          listings: a.listings,
-        })),
-      });
+          title: key,
+          listings: Array.isArray(value) ? value : [],
+        })
+      );
+
+      // Delete old amenities
+      await prisma.amenity.deleteMany({ where: { projectId } });
+
+      // Create new amenities
+      if (amenitiesArray.length > 0) {
+        await prisma.amenity.createMany({
+          data: amenitiesArray,
+        });
+      }
     }
 
     const updated = await prisma.project.update({
