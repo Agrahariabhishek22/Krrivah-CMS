@@ -25,4 +25,4 @@ router.put("/:id",verifyToken,restrictTo("Admin", "Super_Admin"),catchMulterErro
 
 router.delete("/:id",verifyToken,restrictTo("Admin", "Super_Admin"),deleteBlog);
 
-module.exports=router;
+module.exports=router; 

@@ -14,23 +14,31 @@ const statRoute = require('./routes/statRoute');
 // Load env files
 dotenv.config();
 
-// Create express app
+// Create express app 
 const app = express();
 
 // Middleware
 app.use(cookieParser()); // First load cookies
 
 // 👇 CORS configuration updated to allow your frontend URL
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
+
 app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true 
 }));
 
 app.use(express.json());
 
 // Import routes BEFORE the error handler
 app.use("/api/auth", authRoutes);
-app.use("/api/contact", contactRoutes);
+app.use("/api/contact", contactRoutes); 
 app.use('/api/blog', blogRoutes);
 app.use('/api/project', projectRoute);
 app.use('/api/heroBrand', HeroBrandRoute);
@@ -39,7 +47,7 @@ app.use('/api/stat', statRoute);
 
 // Test route
 app.get("/", (req, res) => {
-    res.send("Krrivah CMS Backend is Running ");
+    res.send("Krrivah CMS Backend is Running "); 
 });
 
 // Error middleware (should be loaded after routes)
