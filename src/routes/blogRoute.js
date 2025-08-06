@@ -19,7 +19,7 @@ router.post(
   createBlog
 );
 
-router.get('/',verifyToken,restrictTo("Admin", "Super_Admin"),getAllBlogs);
+router.get('/',getAllBlogs);
 
 router.put("/:id",verifyToken,restrictTo("Admin", "Super_Admin"),catchMulterError(multiUpload),updateBlog);
 

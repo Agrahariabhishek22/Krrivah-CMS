@@ -10,6 +10,7 @@ const projectRoute = require('./routes/projectRoute');
 const HeroBrandRoute = require('./routes/HeroBrandRoute');
 const imageRoute = require('./routes/imageRoute');
 const statRoute = require('./routes/statRoute');
+const dashboardRoutes=require('./routes/dashboardRoute');
 
 // Load env files
 dotenv.config();
@@ -36,6 +37,7 @@ app.use('/api/project', projectRoute);
 app.use('/api/heroBrand', HeroBrandRoute);
 app.use('/api/image', imageRoute);
 app.use('/api/stat', statRoute);
+app.use('/api/dashboard',dashboardRoutes);
 
 // Test route
 app.get("/", (req, res) => {
