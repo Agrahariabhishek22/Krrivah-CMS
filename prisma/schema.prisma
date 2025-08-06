@@ -47,6 +47,8 @@ model Blog{
   short_des String
   long_des String
   quote String?
+  slug_url String @unique
+  slug_keywords String
   isActive Boolean @default(true)
 }
 

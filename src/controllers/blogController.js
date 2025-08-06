@@ -1,25 +1,27 @@
-const prisma=require("../prismaClient");
-const ApiResponse=require("../utils/apiResponse")
-const {cloudinary}=require("../utils/cloudinary");;
-const {getPublicIdFromUrl}=require("../utils/cloudinaryHelper")
+const prisma = require("../prismaClient");
+const ApiResponse = require("../utils/apiResponse");
+const { cloudinary } = require("../utils/cloudinary");
+const { getPublicIdFromUrl } = require("../utils/cloudinaryHelper");
 
-
+// CREATE BLOG
 exports.createBlog = async (req, res, next) => {
   try {
     const {
       category,
       title,
       short_des,
-      long_des, 
-    } = req.body;      
- 
+      long_des,
+      slug_keywords,
+      slug_url
+    } = req.body;
+
     // Cloudinary file URLs
     const thumbnail = req.files['thumbnail']?.[0]?.path;
     const mainImage = req.files['mainImage']?.[0]?.path;
 
-    if (!category || !thumbnail || !mainImage || !title || !short_des || !long_des) {
+    if (!category || !thumbnail || !mainImage || !title || !short_des || !long_des || !slug_keywords || !slug_url) {
       return res.status(400).json({ error: "Required fields are missing" });
-    }    
+    }
 
     const blog = await prisma.blog.create({
       data: {
@@ -29,6 +31,8 @@ exports.createBlog = async (req, res, next) => {
         title,
         short_des,
         long_des,
+        slug_keywords,
+        slug_url
       },
     });
 
@@ -37,11 +41,13 @@ exports.createBlog = async (req, res, next) => {
     next(error);
   }
 };
+
+// GET ALL BLOGS
 exports.getAllBlogs = async (req, res, next) => {
   try {
     const blogs = await prisma.blog.findMany({
-      orderBy:{
-        date:'desc',
+      orderBy: {
+        date: 'desc',
       }
     });
     return res.status(200).json(new ApiResponse(200, "Blogs fetched successfully", blogs));
@@ -50,6 +56,7 @@ exports.getAllBlogs = async (req, res, next) => {
   }
 };
 
+// DELETE BLOG
 exports.deleteBlog = async (req, res, next) => {
   try {
     const blogId = parseInt(req.params.id);
@@ -87,6 +94,7 @@ exports.deleteBlog = async (req, res, next) => {
   }
 };
 
+// UPDATE BLOG
 exports.updateBlog = async (req, res, next) => {
   try {
     const blogId = parseInt(req.params.id);
@@ -103,13 +111,13 @@ exports.updateBlog = async (req, res, next) => {
       long_des,
       quote,
       isActive,
+      slug_keywords,
+      slug_url
     } = req.body;
-    console.log(isActive);
-    
 
     const files = req.files;
 
-    //Handle image replacement logic
+    // Handle image replacement logic
     const imageFields = ["thumbnail", "mainImage"];
     const updatedImages = {};
 
@@ -133,7 +141,7 @@ exports.updateBlog = async (req, res, next) => {
         updatedImages[field] = blog[field];
       }
     }
-    
+
     const updatedBlog = await prisma.blog.update({
       where: { id: blogId },
       data: {
@@ -143,6 +151,8 @@ exports.updateBlog = async (req, res, next) => {
         long_des,
         quote,
         isActive,
+        slug_keywords,
+        slug_url,
         ...updatedImages,
       },
     });
@@ -154,4 +164,3 @@ exports.updateBlog = async (req, res, next) => {
     next(error);
   }
 };
-
