@@ -18,8 +18,8 @@ router.post(
   catchMulterError(multiUpload),
   createBlog
 );
-  
-router.get('/', getAllBlogs);
+
+router.get('/',getAllBlogs);
 
 router.put("/:id",verifyToken,restrictTo("Admin", "Super_Admin"),catchMulterError(multiUpload),updateBlog);
 

@@ -92,7 +92,7 @@ exports.updateProject = async (req, res, next) => {
     const updateData = {};
 
     if (category) updateData.category = category;
-    if (title) updateData.title = title;
+    if (title) updateData.title = title; 
     if (location) updateData.location = location;
     if (short_des) updateData.short_des = short_des;
     if (long_des) updateData.long_des = long_des;
@@ -144,7 +144,7 @@ exports.updateProject = async (req, res, next) => {
       // Create new amenities
       if (amenitiesArray.length > 0) {
         await prisma.amenity.createMany({
-          data: amenitiesArray,
+          data: amenitiesArray, 
         });
       }
     }
