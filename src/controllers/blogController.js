@@ -56,7 +56,7 @@ exports.getAllBlogs = async (req, res, next) => {
   }
 };
 
-// DELETE BLOG
+// DELETE BLOG 
 exports.deleteBlog = async (req, res, next) => {
   try {
     const blogId = parseInt(req.params.id);
