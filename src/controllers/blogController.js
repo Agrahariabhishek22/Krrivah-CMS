@@ -19,7 +19,7 @@ exports.createBlog = async (req, res, next) => {
     const thumbnail = req.files['thumbnail']?.[0]?.path;
     const mainImage = req.files['mainImage']?.[0]?.path;
 
-    if (!category || !thumbnail || !mainImage || !title || !short_des || !long_des || !slug_keywords || !slug_url) {
+    if (!category || !thumbnail || !mainImage || !title || !short_des || !long_des ) {
       return res.status(400).json({ error: "Required fields are missing" });
     }
 
