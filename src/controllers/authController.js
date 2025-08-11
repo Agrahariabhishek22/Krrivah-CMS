@@ -43,11 +43,11 @@ exports.login = async (req, res, next) => {
 
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
-      return new ApiResponse(401, "Invalid email or password");
+      return res.status(401).json(new ApiResponse(401, "Invalid email or password"));
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return new ApiResponse(401, "Invalid email or password");
+      return res.status(401).json(new ApiResponse(401, "Invalid email or password"));
     }
     const token = jwt.sign(
       { id: user.id, role: user.role },
