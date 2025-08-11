@@ -13,13 +13,16 @@ exports.createProject = async (req, res, next) => {
       long_des,
       amenities, // array of { title: listings[] }
     } = req.body;
-    
 
     const brochureFile = req.files?.brochure?.[0];
     const imageFiles = req.files?.images || [];
+    const thumbnailFiles = req.files?.thumbnail || [];
 
     if (!brochureFile) {
       return res.status(400).json({ error: "Brochure PDF is required" });
+    }
+    if (!thumbnailFiles) {
+      return res.status(400).json({ error: "Thumbnail is required" });
     }
 
     if (imageFiles.length > 10) {
@@ -28,6 +31,7 @@ exports.createProject = async (req, res, next) => {
 
     const imageUrls = imageFiles.map((file) => file.path);
     const brochureUrl = brochureFile.path;
+    const thumbnailUrl = thumbnailFiles[0].path;
 
     // Parse amenities
     let amenitiesData = [];
@@ -47,7 +51,7 @@ exports.createProject = async (req, res, next) => {
         location,
         short_des,
         long_des,
-        thumbnail: imageUrls[0], // default first image
+        thumbnail: thumbnailUrl, // default first image
         images: imageUrls,
         Brochure: brochureUrl,
         Amenities: {
@@ -82,6 +86,7 @@ exports.updateProject = async (req, res, next) => {
 
     const files = req.files;
     const {
+      createdAt,
       category,
       title,
       location,
@@ -92,13 +97,17 @@ exports.updateProject = async (req, res, next) => {
     } = req.body;
 
     const updateData = {};
-
+    
     if (category) updateData.category = category;
-    if (title) updateData.title = title; 
+    if (createdAt) updateData.createdAt = createdAt;
+    if (title) updateData.title = title;
     if (location) updateData.location = location;
     if (short_des) updateData.short_des = short_des;
     if (long_des) updateData.long_des = long_des;
-    if (isActive !== undefined) updateData.isActive = isActive;
+    if (isActive||!isActive) updateData.isActive = isActive;
+    if (typeof updateData.isActive === "string") {
+      updateData.isActive = updateData.isActive.toLowerCase() === "true";
+    }
 
     // --- Brochure update ---
     if (files?.brochure?.[0]) {
@@ -109,23 +118,38 @@ exports.updateProject = async (req, res, next) => {
       updateData.Brochure = files.brochure[0].path;
     }
 
+    // console.log("Brouchure updated");
+
     // --- Images update ---
+    if(files?.thumbnail?.[0]) {
+      const publicId = getPublicIdFromUrl(existing.thumbnail); 
+      if(publicId){
+        await cloudinary.uploader.destroy(publicId,{resource_type:"image"});
+      }
+      updateData.thumbnail = files?.thumbnail?.[0].path;
+    }
+
     if (files?.images?.length > 0) {
       for (const img of existing.images) {
         const publicId = getPublicIdFromUrl(img);
         if (publicId) {
-          await cloudinary.uploader.destroy(publicId, { resource_type: "image" });
+          await cloudinary.uploader.destroy(publicId, {
+            resource_type: "image",
+          });
         }
       }
       const newImages = files.images.map((f) => f.path);
       updateData.images = newImages;
-      updateData.thumbnail = newImages[0];
     }
 
+    // console.log("Image updated");
     // Use a transaction for updating project + amenities together
     const updatedProject = await prisma.$transaction(async (tx) => {
       // Update project main details
-      const proj = await tx.project.update({
+      // console.log("Transaction begin");
+      // console.log(updateData);
+
+      const proj = await prisma.project.update({
         where: { id: projectId },
         data: updateData,
       });
@@ -142,26 +166,30 @@ exports.updateProject = async (req, res, next) => {
         }));
 
         // Delete old amenities
-        await tx.amenity.deleteMany({ where: { projectId } });
+        await prisma.amenitiy.deleteMany({ where: { projectId } });
 
         // Create new amenities
         if (amenitiesArray.length > 0) {
-        await prisma.amenity.createMany({
-          data: amenitiesArray, 
-        });
+          await prisma.amenitiy.createMany({
+            data: amenitiesArray,
+          });
+        }
       }
-      }
+      // console.log("Amenities done ");
 
       // Return updated project with fresh amenities
-      return tx.project.findUnique({
+      return prisma.project.findUnique({
         where: { id: projectId },
         include: { Amenities: true },
       });
     });
+    // console.log("Project updated");
 
     return res
       .status(200)
-      .json(new ApiResponse(200, "Project updated successfully", updatedProject));
+      .json(
+        new ApiResponse(200, "Project updated successfully", updatedProject)
+      );
   } catch (error) {
     next(error);
   }
