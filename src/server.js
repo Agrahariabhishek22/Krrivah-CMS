@@ -22,7 +22,7 @@ const app = express();
 app.use(cookieParser()); // First load cookies
 
 // 👇 CORS configuration updated to allow your frontend URL
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
+const allowedOrigins = ['https://frontendkrrivah.vercel.app', 'https://cms-krrivah.vercel.app'];
 
 app.use(cors({
   origin: function (origin, callback) {
