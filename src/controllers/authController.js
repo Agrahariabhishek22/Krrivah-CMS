@@ -58,7 +58,8 @@ exports.login = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: "3d" }
     );
-
+    console.log("login token",token);
+    
     const options = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // use HTTPS in production
