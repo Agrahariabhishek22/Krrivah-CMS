@@ -16,14 +16,13 @@ const dashboardRoutes=require('./routes/dashboardRoute');
 dotenv.config();
 
 // Create express app 
-const app = express();
+const app = express(); 
 
-// Middleware
+// Middleware 
 app.use(cookieParser()); // First load cookies
-
+ 
 // 👇 CORS configuration updated to allow your frontend URL
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
-
+const allowedOrigins = ['https://frontendkrrivah.vercel.app', 'https://cms-krrivah.vercel.app','http://localhost:5173','http://localhost:5174',];
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {

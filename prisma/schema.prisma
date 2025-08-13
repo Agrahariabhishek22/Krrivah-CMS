@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -38,8 +37,8 @@ model Blog {
   long_des      String
   quote         String?
   isActive      Boolean  @default(true)
-  slug_keywords String?
-  slug_url      String?
+  slug_keywords String
+  slug_url      String   @unique
 }
 
 model Project {
