@@ -70,7 +70,7 @@ exports.createProject = async (req, res, next) => {
     next(error);
   }
 };
-
+  
 exports.updateProject = async (req, res, next) => {
   try {
     const projectId = parseInt(req.params.id);
