@@ -39,21 +39,26 @@ exports.register = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   try {
-    const {email,password} = req.body;
+    const { email, password } = req.body;
 
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
+    // Static email-password check
+    if (email !== "krrivah@gmail.com" || password !== "krrivah@123") {
       return res.status(401).json(new ApiResponse(401, "Invalid email or password"));
     }
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json(new ApiResponse(401, "Invalid email or password"));
-    }
+
+    // Static user object
+    const user = {
+      id: 1,
+      email: "krrivah@gmail.com",
+      role: "Admin"
+    };
+
     const token = jwt.sign(
       { id: user.id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "3d" }
     );
+
     const options = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // use HTTPS in production
